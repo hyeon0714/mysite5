@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.javaex.service.UserService;
 import com.javaex.vo.UserVo;
+import com.mysql.cj.Session;
 
 @Controller
 @RequestMapping(value = "user")
@@ -71,5 +72,14 @@ public class UserController {
 		us.exeModify(uv);
 		
 		return "redirect:/main";
+	}
+	
+	//로그아웃
+	@RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.POST})
+	public String logOut(HttpSession session) {
+		
+		session.removeAttribute("userVo");
+		
+		return "redirect:/user/loginform";
 	}
 }

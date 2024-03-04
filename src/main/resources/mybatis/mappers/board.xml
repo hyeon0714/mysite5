@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<!-- 매핑 -->
+	<parameterMap type="com.javaex.vo.BoardVo" id="bvp">
+		<parameter property="no"/>
+		<parameter property="title"/>
+		<parameter property="content"/>
+		<parameter property="hit"/>
+		<parameter property="date"/>
+		<parameter property="userNo"/>
+		<parameter property="name"/>
+	</parameterMap>
+	
+	<resultMap type="com.javaex.vo.BoardVo" id="bvr">
+		<result column="no" property="no"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="reg_date" property="date"/>
+		<result column="user_no" property="userNo"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	
+	<!-- 쿼리문 작성 -->
+	<!-- 리스트 -->
+	<select id="list" resultMap="bvr">
+		<![CDATA[
+			select	board.no,
+					title,
+			        content,
+			        hit,
+			        reg_date,
+			        user_no,
+			        name
+			from board, users
+			where board.user_no = users.no
+		]]>
+	</select>
+	
+	<!-- 수정 -->
+	<update id="modify" parameterMap="bvp">
+		<![CDATA[
+			update	board
+			set title = #{title},
+				content = #{content}
+			where no = #{no}
+		]]>
+	</update>
+	
+	<!-- 조회수 1개 가져오기 -->
+	<select id="hit" parameterType="int" resultMap="bvr">
+		<![CDATA[
+			select	hit
+			from board
+			where no = #{no}
+		]]>
+	</select>
+	
+	<!-- 조회수 1회 올리기 -->
+	<update id="upHit" parameterMap="bvp">
+		<![CDATA[
+			update	board
+			set hit = #{hit}
+			where no = #{no}
+		]]>
+	</update>
+	
+	<!-- 1개 읽기 -->
+	<select id="read" parameterType="int" resultMap="bvr">
+		<![CDATA[
+			select	title,
+					content,
+			        hit,
+			        reg_date,
+			        name
+			from board, users
+			where board.user_no = users.no
+			and		board.no = #{no}
+		]]>
+	</select>
+	
+	<!-- 쓰기 등록 -->
+	<insert id="write" parameterMap="bvp">
+		<![CDATA[
+			insert into board
+			value(null, #{title}, #{content}, 0, date(now()), #{userNo});
+		]]>
+	</insert>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			delete from board
+			where no = #{no}
+		]]>
+	</delete>
+</mapper>
